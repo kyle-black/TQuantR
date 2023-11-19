@@ -1,1 +1,1 @@
-# TQuantR
+# TensorQuant

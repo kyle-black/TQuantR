@@ -1,0 +1,16 @@
+pandas
+
+numpy
+
+
+scipy
+
+scikit-learn
+
+matplotlib
+seaborn
+
+statsmodels
+
+redis
+schedule
