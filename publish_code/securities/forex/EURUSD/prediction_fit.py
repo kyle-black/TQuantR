@@ -60,10 +60,14 @@ def make_predictions_dwn(symbol,new_data: pd.DataFrame) -> pd.Series:
     """
 
     # Load the trained model, PCA, and scaler
-    clf = joblib.load(f'models/{symbol}/random_forest_model_dwn_{symbol}.pkl')
-    pca = joblib.load(f'models/{symbol}/pca_transformation_dwn_{symbol}.pkl')
-    scaler = joblib.load(f'models/{symbol}/scaler_{symbol}.pkl')
+  #  clf = joblib.load(f'models/{symbol}/random_forest_model_dwn_{symbol}.pkl')
+  #  pca = joblib.load(f'models/{symbol}/pca_transformation_dwn_{symbol}.pkl')
+  #  scaler = joblib.load(f'models/{symbol}/scaler_{symbol}.pkl')
     
+
+    clf = joblib.load(f'random_forest_model_up_EURUSD_60.pkl')
+    pca = joblib.load(f'pca_transformation_up_EURUSD_60.pkl')
+    scaler = joblib.load(f'scaler_EURUSD.pkl')
     # Prepare the new data
     feature_cols = ['Daily_Returns', 'Middle_Band', 'Upper_Band', 'Lower_Band',
                     'Log_Returns', 'MACD', 'Signal_Line_MACD', 'RSI','SpreadOC','SpreadLH','SMI']
