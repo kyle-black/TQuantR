@@ -26,9 +26,14 @@ def make_predictions(symbol, new_data: pd.DataFrame) -> pd.Series:
     """
 
     # Load the trained model, PCA, and scaler
-    clf = joblib.load(f'models/random_forest_model_up_{symbol}.pkl')
-    pca = joblib.load(f'models/pca_transformation_up_{symbol}.pkl')
-    scaler = joblib.load(f'models/scaler_EURUSD.pkl')
+    #clf = joblib.load(f'models/random_forest_model_up_{symbol}.pkl')
+    #pca = joblib.load(f'models/pca_transformation_up_{symbol}.pkl')
+    #scaler = joblib.load(f'models/scaler_EURUSD.pkl')
+
+
+    clf = joblib.load(f'random_forest_model_up_EURUSD_60.pkl')
+    pca = joblib.load(f'pca_transformation_up_EURUSD_60.pkl')
+    scaler = joblib.load(f'scaler_EURUSD.pkl')
     
     # Prepare the new data
     feature_cols = ['Daily_Returns', 'Middle_Band', 'Upper_Band', 'Lower_Band',
