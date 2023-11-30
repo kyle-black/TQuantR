@@ -314,83 +314,87 @@ def random_forest_classifier(df):
     }
    
     # Training and Predicting for each split
-    for train_data, test_data, weight_data in zip(train_datasets[-1], test_datasets[-1], weights[-1]):
+   # for train_data, test_data, weight_data in zip(train_datasets[-1], test_datasets[-1], weights[-1]):
         #train = train_datasets
         #test = test_datasets
         #weight = weights[-1] 
         
+    train_data =   train_datasets[-1]
+
+    test_data = test_datasets[-1]
+
+    weight_data =  weights[-1]
         
-        
-        X_train = train_data[feature_cols]
-        y_train = train_data[target_col]
-        X_test = test_data[feature_cols]
-        y_test = test_data[target_col]
+    X_train = train_data[feature_cols]
+    y_train = train_data[target_col]
+    X_test = test_data[feature_cols]
+    y_test = test_data[target_col]
 
-        # Standardize the data
-        X_train = scaler.fit_transform(X_train)
-        X_test = scaler.transform(X_test)
+    # Standardize the data
+    X_train = scaler.fit_transform(X_train)
+    X_test = scaler.transform(X_test)
 
-        # Apply PCA
-        pca = PCA(n_components=n_components)
-        X_train = pca.fit_transform(X_train)
-        X_test = pca.transform(X_test)
+    # Apply PCA
+    pca = PCA(n_components=n_components)
+    X_train = pca.fit_transform(X_train)
+    X_test = pca.transform(X_test)
 
-        # Initialize GridSearchCV
-        #clf = SVC(probability=True, C=50)
-        clf =RandomForestClassifier( random_state=42, n_estimators=1000)
+    # Initialize GridSearchCV
+    #clf = SVC(probability=True, C=50)
+    clf =RandomForestClassifier( random_state=42, n_estimators=1000)
 
-       # grid_search = GridSearchCV(estimator=clf, param_grid=param_grid, cv=3, n_jobs=-1, verbose=2)
-        #grid_search.fit(X_train, y_train, sample_weight=weight_data)
+    # grid_search = GridSearchCV(estimator=clf, param_grid=param_grid, cv=3, n_jobs=-1, verbose=2)
+    #grid_search.fit(X_train, y_train, sample_weight=weight_data)
 
-        #best_params = grid_search.best_params_
-       # print(f"Best parameters found: {best_params}")
+    #best_params = grid_search.best_params_
+    # print(f"Best parameters found: {best_params}")
 
-        #best_rf = grid_search.best_estimator_
-        #grid_search = GridSearchCV(clf, param_grid,refit=True, verbose=3, n_jobs=-1)
-        clf.fit(X_train, y_train, sample_weight=weight_data)
+    #best_rf = grid_search.best_estimator_
+    #grid_search = GridSearchCV(clf, param_grid,refit=True, verbose=3, n_jobs=-1)
+    clf.fit(X_train, y_train, sample_weight=weight_data)
 
-        # Use the best estimator to predict
-        #best_svm = grid_search.best_estimator_
-        #print('best svm:',best_svm)
-        probas = clf.predict_proba(X_test)
+    # Use the best estimator to predict
+    #best_svm = grid_search.best_estimator_
+    #print('best svm:',best_svm)
+    probas = clf.predict_proba(X_test)
 
-        #y_pred = (probas[:, 1] >= threshold).astype(int)
+    #y_pred = (probas[:, 1] >= threshold).astype(int)
 
-        
-        max_proba_indices = np.argmax(probas, axis=1)
-        predicted_classes = clf.classes_[max_proba_indices]
-        y_pred = predicted_classes
+    
+    max_proba_indices = np.argmax(probas, axis=1)
+    predicted_classes = clf.classes_[max_proba_indices]
+    y_pred = predicted_classes
 
-        
+    
 
 
-        # Print and store results
-        print('######################')
-        print('probas:', probas)
-        print(classification_report(y_test, y_pred, zero_division=1))
-        print('Confusion Matrix:', confusion_matrix(y_test, y_pred))
-        #predicted_probabilities = probas[:, 2]
-        #print('predicted_probs:', predicted_probabilities)
-        #print('y_test:', y_test)
-        print(f'Y_true:{y_test} Y_pred:{y_pred}' )
+    # Print and store results
+    print('######################')
+    print('probas:', probas)
+    print(classification_report(y_test, y_pred, zero_division=1))
+    print('Confusion Matrix:', confusion_matrix(y_test, y_pred))
+    #predicted_probabilities = probas[:, 2]
+    #print('predicted_probs:', predicted_probabilities)
+    #print('y_test:', y_test)
+    print(f'Y_true:{y_test} Y_pred:{y_pred}' )
 
-        comparison_df = pd.DataFrame({'Y_true': y_test, 'Y_pred': y_pred})
+    comparison_df = pd.DataFrame({'Y_true': y_test, 'Y_pred': y_pred})
 
-        print(comparison_df)
+    print(comparison_df)
 
-       # brier_score = brier_score_loss(y_test, predicted_probabilities)
-       # print('Brier Score:', brier_score)
+    # brier_score = brier_score_loss(y_test, predicted_probabilities)
+    # print('Brier Score:', brier_score)
 
-        predictions_df = pd.DataFrame({
-            'Actual': y_test,
-            'Predictions': y_pred
-        })
-        all_predictions.append(predictions_df)
+    predictions_df = pd.DataFrame({
+        'Actual': y_test,
+        'Predictions': y_pred
+    })
+    all_predictions.append(predictions_df)
 
-        all_actuals.extend(y_test.tolist())
-        all_preds.extend(y_pred.tolist())
-        print('###########################')
-        print('classes---> ',clf.classes_)
+    all_actuals.extend(y_test.tolist())
+    all_preds.extend(y_pred.tolist())
+    print('###########################')
+    print('classes---> ',clf.classes_)
 
 
     # After processing all splits, compute overall metrics
