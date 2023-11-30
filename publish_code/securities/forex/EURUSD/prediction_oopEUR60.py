@@ -19,7 +19,7 @@ from datetime import datetime
 
 import live_data
 
-from redis_connect import redis_connection
+#from redis_connect import redis_connection
 import time
 import schedule
 import financial_bars   
@@ -195,14 +195,14 @@ def run_predictions():
 
     print(output_dict)
 
-    if redis_connection.exists(date):
-        print(f' {date} is an already existing bar')
-    else:
-        print(f'New Bar Created at {date}')
+   # if redis_connection.exists(date):
+   #     print(f' {date} is an already existing bar')
+   # else:
+   #     print(f'New Bar Created at {date}')
 
     
 
-    
+    '''
     
     
     res1 = redis_connection.hset(
@@ -224,7 +224,7 @@ def run_predictions():
     res4 = redis_connection.hgetall(date)
     print('redis:',res4)
 
-
+    '''
 schedule.every(1).minutes.do(run_predictions)
 
 while True:
