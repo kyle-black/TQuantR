@@ -399,9 +399,9 @@ def random_forest_classifier(df):
 
     # After processing all splits, compute overall metrics
     
-    joblib.dump(clf, 'models/EURUSD/random_forest_model_up_EURUSD_60.pkl')
-    joblib.dump(pca, 'models/EURUSD/pca_transformation_up_EURUSD_60.pkl')
-    joblib.dump(scaler, 'models/EURUSD/scaler_EURUSD.pkl')
+    joblib.dump(clf, 'random_forest_model_up_EURUSD_60.pkl')
+    joblib.dump(pca, 'pca_transformation_up_EURUSD_60.pkl')
+    joblib.dump(scaler, 'scaler_EURUSD.pkl')
     
     file_input = "/mnt/volume_nyc1_02"
    
