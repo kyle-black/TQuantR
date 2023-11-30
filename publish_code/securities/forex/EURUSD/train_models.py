@@ -178,7 +178,7 @@ def support_vector_classifier(df):
                   'kernel': ['rbf']} 
 
     # Training and Predicting for each split
-    for train_data, test_data, weight_data in zip(train_datasets, test_datasets, weights):
+    for train_data, test_data, weight_data in zip(train_datasets[-1], test_datasets[-1], weights[-1]):
         
         X_train = train_data[feature_cols]
         y_train = train_data[target_col]
