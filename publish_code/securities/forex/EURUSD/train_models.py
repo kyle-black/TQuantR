@@ -314,7 +314,7 @@ def random_forest_classifier(df):
     }
    
     # Training and Predicting for each split
-    for train_data, test_data, weight_data in zip(train_datasets, test_datasets, weights):
+    for train_data, test_data, weight_data in zip(train_datasets[-1], test_datasets[-1], weights[-1]):
         #train = train_datasets
         #test = test_datasets
         #weight = weights[-1] 
