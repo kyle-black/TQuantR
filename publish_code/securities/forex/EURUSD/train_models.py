@@ -343,7 +343,7 @@ def random_forest_classifier(df):
     #clf = SVC(probability=True, C=50)
     clf =RandomForestClassifier( random_state=42, n_estimators=1000)
 
-    # grid_search = GridSearchCV(estimator=clf, param_grid=param_grid, cv=3, n_jobs=-1, verbose=2)
+    grid_search = GridSearchCV(estimator=clf, param_grid=param_grid, cv=3, n_jobs=-1, verbose=2)
     #grid_search.fit(X_train, y_train, sample_weight=weight_data)
 
     #best_params = grid_search.best_params_
@@ -351,12 +351,12 @@ def random_forest_classifier(df):
 
     #best_rf = grid_search.best_estimator_
     #grid_search = GridSearchCV(clf, param_grid,refit=True, verbose=3, n_jobs=-1)
-    clf.fit(X_train, y_train, sample_weight=weight_data)
+    grid_search.fit(X_train, y_train, sample_weight=weight_data)
 
     # Use the best estimator to predict
-    #best_svm = grid_search.best_estimator_
+    best_svm = grid_search.best_estimator_
     #print('best svm:',best_svm)
-    probas = clf.predict_proba(X_test)
+    probas = best_svm.predict_proba(X_test)
 
     #y_pred = (probas[:, 1] >= threshold).astype(int)
 
