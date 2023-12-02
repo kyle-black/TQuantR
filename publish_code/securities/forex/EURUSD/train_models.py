@@ -304,6 +304,7 @@ def random_forest_classifier(df):
         'kernel': ['linear']  
     }
     '''
+    '''
     param_grid = {
         'n_estimators': [200, 500, 1000],
         'max_features': ['log2', 'sqrt'],
@@ -312,7 +313,7 @@ def random_forest_classifier(df):
         'min_samples_leaf': [1, 2],
         'bootstrap': [True, False]
     }
-   
+   '''
     # Training and Predicting for each split
    # for train_data, test_data, weight_data in zip(train_datasets[-1], test_datasets[-1], weights[-1]):
         #train = train_datasets
@@ -341,9 +342,9 @@ def random_forest_classifier(df):
 
     # Initialize GridSearchCV
     #clf = SVC(probability=True, C=50)
-    clf =RandomForestClassifier( random_state=42, criterion='log_loss')
+    clf =RandomForestClassifier( random_state=42, criterion='log_loss', n_estimators=1000)
 
-    grid_search = GridSearchCV(estimator=clf, param_grid=param_grid, cv=3, n_jobs=-1, verbose=2)
+    #grid_search = GridSearchCV(estimator=clf, param_grid=param_grid, cv=3, n_jobs=-1, verbose=2)
     #grid_search.fit(X_train, y_train, sample_weight=weight_data)
 
     #best_params = grid_search.best_params_
@@ -351,18 +352,18 @@ def random_forest_classifier(df):
 
     #best_rf = grid_search.best_estimator_
     #grid_search = GridSearchCV(clf, param_grid,refit=True, verbose=3, n_jobs=-1)
-    grid_search.fit(X_train, y_train, sample_weight=weight_data)
+    clf.fit(X_train, y_train, sample_weight=weight_data)
 
     # Use the best estimator to predict
-    best_svm = grid_search.best_estimator_
-    print('best svm:',best_svm)
-    probas = best_svm.predict_proba(X_test)
+    #best_svm = grid_search.best_estimator_
+    #print('best svm:',best_svm)
+    probas = clf.predict_proba(X_test)
 
     #y_pred = (probas[:, 1] >= threshold).astype(int)
 
     
     max_proba_indices = np.argmax(probas, axis=1)
-    predicted_classes = best_svm.classes_[max_proba_indices]
+    predicted_classes = clf.classes_[max_proba_indices]
     y_pred = predicted_classes
 
     
