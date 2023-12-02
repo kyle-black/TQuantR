@@ -363,6 +363,7 @@ def random_forest_classifier(df):
 
    # selected_columns= probas[:,[0,2]]
     max_proba_indices = np.argmax(probas[:,[0,2]], axis=1)
+    max_proba_indices= np.where(max_proba_indices==1,2,max_proba_indices)
     predicted_classes = clf.classes_[max_proba_indices]
     y_pred = predicted_classes
 
