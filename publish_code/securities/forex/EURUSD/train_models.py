@@ -306,7 +306,7 @@ def random_forest_classifier(df):
     '''
     param_grid = {
         'n_estimators': [200, 500, 1000],
-        'max_features': ['auto', 'sqrt'],
+        'max_features': ['log2', 'sqrt'],
         'max_depth': [10, 20, None],
         'min_samples_split': [2, 5],
         'min_samples_leaf': [1, 2],
@@ -355,14 +355,14 @@ def random_forest_classifier(df):
 
     # Use the best estimator to predict
     best_svm = grid_search.best_estimator_
-    #print('best svm:',best_svm)
+    print('best svm:',best_svm)
     probas = best_svm.predict_proba(X_test)
 
     #y_pred = (probas[:, 1] >= threshold).astype(int)
 
     
     max_proba_indices = np.argmax(probas, axis=1)
-    predicted_classes = clf.classes_[max_proba_indices]
+    predicted_classes = best_svm.classes_[max_proba_indices]
     y_pred = predicted_classes
 
     
