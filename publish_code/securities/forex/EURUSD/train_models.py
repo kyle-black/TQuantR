@@ -17,8 +17,11 @@ import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import brier_score_loss
 #from sklearn.externals import joblib
 # Import necessary keras modules
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.metrics import log_loss
 
 #from keras.models import Sequential
 #from keras.layers import Dense, Dropout
@@ -359,11 +362,16 @@ def random_forest_classifier(df):
     #print('best svm:',best_svm)
     probas = clf.predict_proba(X_test)
 
+    encoder = OneHotEncoder(sparse=False)
+
+    
+
+    
     #y_pred = (probas[:, 1] >= threshold).astype(int)
 
    # selected_columns= probas[:,[0,2]]
-    max_proba_indices = np.argmax(probas[:,[0,2]], axis=1)
-    max_proba_indices= np.where(max_proba_indices==1,2,max_proba_indices)
+    max_proba_indices = np.argmax(probas, axis=1)
+   # max_proba_indices= np.where(max_proba_indices==1,2,max_proba_indices)
     predicted_classes = clf.classes_[max_proba_indices]
     y_pred = predicted_classes
 
@@ -383,6 +391,17 @@ def random_forest_classifier(df):
     comparison_df = pd.DataFrame({'Y_true': y_test, 'Y_pred': y_pred})
 
     print(comparison_df)
+
+    # Assume y_test is your test data
+    y_test = y_test.reshape(-1, 1)
+
+    # Fit and transform the data
+    y_test_encoded = encoder.fit_transform(y_test)
+
+    logloss = log_loss(y_test_encoded, probas)
+
+
+    print('logloss:', logloss)
 
     # brier_score = brier_score_loss(y_test, predicted_probabilities)
     # print('Brier Score:', brier_score)
