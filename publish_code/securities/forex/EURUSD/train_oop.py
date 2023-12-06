@@ -20,12 +20,13 @@ import elbow_plot
 
 
 class CreateBars:
-    def __init__(self, raw_bars):
+    def __init__(self, raw_bars, asset):
         self.raw_bars = raw_bars
         self.time_bar_df = None  # Initialize this attribute
         self.time_bar_dict = None
+        self.asset =asset
     def time_bars(self):
-        self.time_bar_df = bc.time_bars(self.raw_bars)  # Set the attribute
+        self.time_bar_df = bc.time_bars(self.raw_bars, self.asset)  # Set the attribute
         self.time_bar_dict = self.time_bar_df.to_dict('records')
         return self.time_bar_df
 
@@ -40,7 +41,7 @@ class CreateBars:
         # Check if time_bar_df has been created, if not, create it
         if self.time_bar_df is None:
             self.time_bars()
-        return bc.get_dollar_bars(self.time_bar_df, 16000)
+        return bc.get_dollar_bars(self.time_bar_df, 16000, self.asset)
     
     
 class Analysis:

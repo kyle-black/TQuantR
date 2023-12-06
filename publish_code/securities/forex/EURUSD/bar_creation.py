@@ -8,10 +8,10 @@ from datetime import datetime, timedelta
 
 
 
-def time_bars(raw_data):
+def time_bars(raw_data, asset):
     
     df =raw_data
-    df['Daily_Returns'] = df['Close'].pct_change()
+    df['Daily_Returns'] = df[f'{asset}_Close'].pct_change()
     df = df[:]
 
     
@@ -77,7 +77,7 @@ def get_volume_bars(ohlc_df, lookback_period):
 
     return volume_bars_df
 
-def get_dollar_bars(time_bars, dollar_threshold):
+def get_dollar_bars(time_bars, dollar_threshold, asset):
     
     time_bars = time_bars.to_dict('records') 
 
@@ -141,7 +141,7 @@ def get_dollar_bars(time_bars, dollar_threshold):
     dollar_bars = pd.DataFrame.from_dict(dollar_bars)
     #####################################################  Add percent change column to dollar bar DF. 
 
-    dollar_bars['Daily_Returns'] = dollar_bars['Close'].pct_change()
+    dollar_bars['Daily_Returns'] = dollar_bars[f'{asset}Close'].pct_change()
 
 
     return dollar_bars
