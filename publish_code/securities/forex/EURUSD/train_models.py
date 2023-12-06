@@ -311,7 +311,7 @@ def random_forest_classifier(df, asset):
     target_col = f'{asset}_Close'
 
 
-    print(feature_cols)
+    print(feature_cols.columns)
     '''
     #target_col = ""
     
