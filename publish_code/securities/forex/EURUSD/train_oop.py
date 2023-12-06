@@ -172,9 +172,9 @@ if __name__ == "__main__":
     
     
     
-   
+    print(dollar_bars_df)
     
-    
+    '''
    # analysis_instance_time = Analysis(time_bars_df)
     #print("Std Dev of Time Bars:", analysis_instance_time.std_dev())
     #print('Jaque Bera test:', analysis_instance_time.jaque_bera() )
@@ -214,7 +214,7 @@ if __name__ == "__main__":
     model =Model(label_instance_, asset)
     
     print(model.train_model())
-
+    '''
     
 
    
