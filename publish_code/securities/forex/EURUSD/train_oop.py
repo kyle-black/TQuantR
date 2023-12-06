@@ -162,9 +162,9 @@ if __name__ == "__main__":
     
     time_bars_df = bar_creator.time_bars()
 
-    
-    vol_bars_df = bar_creator.vol_bars()
-    dollar_bars_df = bar_creator.dollar_bars()
+    print(time_bars_df)
+   # vol_bars_df = bar_creator.vol_bars()
+   # dollar_bars_df = bar_creator.dollar_bars()
 
    # print(dollar_bars_df)
     #dollar_bars_df.to_csv('dol_bars.csv')
@@ -172,7 +172,7 @@ if __name__ == "__main__":
     
     
     
-    print(dollar_bars_df)
+   # print(dollar_bars_df)
     
     '''
    # analysis_instance_time = Analysis(time_bars_df)
