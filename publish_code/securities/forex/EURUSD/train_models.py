@@ -297,8 +297,8 @@ def random_forest_classifier(df, asset):
     # 
     #     
     
-    dropcols =df.columns.str.contains(asset)
-    print(dropcols)
+    dropcols =df[df.columns.str.contains(asset)]
+    print(dropcols.columns)
     
     
     #feature_cols = ['Daily_Returns', 'Middle_Band', 'Upper_Band', 'Lower_Band', 'Log_Returns', 'MACD', 'Signal_Line_MACD', 'RSI', 'SpreadOC', 'SpreadLH', 'SMI']
