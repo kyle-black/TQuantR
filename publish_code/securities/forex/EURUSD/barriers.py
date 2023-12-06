@@ -215,12 +215,12 @@ def apply_triple_barrier(df, pt_sl, num_days_active, asset):
     
     # Compute rolling daily volatility
     rolling_window = 24  # Example window size, you can adjust this
-    daily_volatility = df[asset].pct_change().rolling(window=rolling_window).std()
+    daily_volatility = df[close].pct_change().rolling(window=rolling_window).std()
 
     barriers = pd.DataFrame(index=df.index)
 
     for timestamp, data in df.iterrows():
-        price = data[asset]
+        price = data[close]
         volatility = daily_volatility.loc[timestamp]
 
         upper_barrier = price * (1 + pt_sl[0] * (2*volatility))
@@ -236,8 +236,8 @@ def apply_triple_barrier(df, pt_sl, num_days_active, asset):
 
         df_temp = df.loc[timestamp:].iloc[1:]
 
-        touch_upper = df_temp[df_temp['High'] >= upper_barrier].index.min()
-        touch_lower = df_temp[df_temp['Low'] <= lower_barrier].index.min()
+        touch_upper = df_temp[df_temp[high] >= upper_barrier].index.min()
+        touch_lower = df_temp[df_temp[low] <= lower_barrier].index.min()
 
         barriers.at[timestamp, 'touch_upper'] = touch_upper
         barriers.at[timestamp, 'touch_lower'] = touch_lower
