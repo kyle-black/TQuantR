@@ -81,6 +81,8 @@ def get_dollar_bars(time_bars, dollar_threshold, asset):
     
     time_bars = time_bars.to_dict('records') 
 
+    print('timebar dict:', time_bars)
+
     # Initialize an empty list of dollar bars
     dollar_bars = []
 
