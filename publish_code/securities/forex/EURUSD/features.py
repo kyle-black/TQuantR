@@ -9,8 +9,15 @@ def add_price_features(df, window_length,asset):
     df =df.copy()
 
     if asset is not None:
-        close = f'{asset}_Close'
-    else: close = 'Close'
+        open = f'{asset}_Open'
+        close =f'{asset}_Close'
+        high = f'{asset}_High'
+        low = f'{asset}_Low'
+    else: 
+        open= 'Open'
+        close='Close' 
+        high='High'
+        low ='Low' 
     
     ### Add autocorrelation / serial correlation
     autocorr_lag_10 = df[close].autocorr(lag=window_length)
@@ -34,20 +41,20 @@ def add_price_features(df, window_length,asset):
 
     #Log Returns
     df['Log_Returns'] = np.log(df[close]/ df[close].shift(window_length))
-    df['SpreadOC'] = df['Open'] / df[close]
-    df['SpreadLH'] = df['Low'] / df['High']
+    df['SpreadOC'] = df[open] / df[close]
+    df['SpreadLH'] = df[open] / df[high]
 
 
     #######################MACD 
-    exp1 = df[f'{asset}_Close'].ewm(span=12, adjust=False).mean()
-    exp2 = df[f'{asset}_Close'].ewm(span=26, adjust=False).mean()
+    exp1 = df[close].ewm(span=12, adjust=False).mean()
+    exp2 = df[close].ewm(span=26, adjust=False).mean()
     df['MACD'] = exp1 - exp2
     df['Signal_Line_MACD'] = df['MACD'].ewm(span=9, adjust=False).mean()
 
 
 
     #########################RSI
-    delta = df[f'{asset}Close'].diff()
+    delta = df[close].diff()
     gain = (delta.where(delta > 0, 0)).fillna(0)
     loss = (-delta.where(delta < 0, 0)).fillna(0)
     avg_gain = gain.rolling(window=window_length).mean()
@@ -63,7 +70,7 @@ def add_price_features(df, window_length,asset):
     smoothing_period = window_length
 
     # Calculate the raw SMI
-    high_low_diff = df['High'] - df['Low']
+    high_low_diff = df[high] - df[low]
     close_minus_lowest_low = df[close] - high_low_diff.rolling(window=lookback_period).min()
     highest_high_minus_lowest_low = high_low_diff.rolling(window=lookback_period).max() - high_low_diff.rolling(window=lookback_period).min()
 
@@ -143,7 +150,7 @@ def fractional_diff(dataframe, differencing_value=0.1, threshold=1e-5):
 
     return pd.DataFrame(diffed_data, index=dataframe.index[len(weights)-1:])
 '''
-def fractional_diff(series, differencing_value=0.1, threshold=1e-5):
+def fractional_diff(series,asset, differencing_value=0.1, threshold=1e-5):
     """
     Returns the fractionally differenced series.
     """
