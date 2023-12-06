@@ -141,7 +141,7 @@ def get_dollar_bars(time_bars, dollar_threshold, asset):
     dollar_bars = pd.DataFrame.from_dict(dollar_bars)
     #####################################################  Add percent change column to dollar bar DF. 
 
-    dollar_bars['Daily_Returns'] = dollar_bars[f'{asset}Close'].pct_change()
+    dollar_bars['Daily_Returns'] = dollar_bars[f'{asset}_Close'].pct_change()
 
 
     return dollar_bars
