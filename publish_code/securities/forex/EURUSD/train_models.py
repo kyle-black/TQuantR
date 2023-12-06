@@ -298,10 +298,12 @@ def random_forest_classifier(df, asset):
     #     
     
     dropcols =[df.columns.str.contains(asset)]
+    print(dropcols)
     
     
     #feature_cols = ['Daily_Returns', 'Middle_Band', 'Upper_Band', 'Lower_Band', 'Log_Returns', 'MACD', 'Signal_Line_MACD', 'RSI', 'SpreadOC', 'SpreadLH', 'SMI']
     
+    '''
     feature_cols = df.drop(dropcols).columns
     
     #fearture_cols = df.drop('EURUSD', axis=1).columns
@@ -319,13 +321,9 @@ def random_forest_classifier(df, asset):
     
     # Define a parameter grid for GridSearchCV
     '''
-    param_grid = {
-        'C': [ 50], 
-        'gamma': [ 'auto'], 
-        'kernel': ['linear']  
-    }
+
     '''
-    '''
+    
     param_grid = {
         'n_estimators': [200, 500, 1000],
         'max_features': ['log2', 'sqrt'],
@@ -334,7 +332,7 @@ def random_forest_classifier(df, asset):
         'min_samples_leaf': [1, 2],
         'bootstrap': [True, False]
     }
-   '''
+
     # Training and Predicting for each split
    # for train_data, test_data, weight_data in zip(train_datasets[-1], test_datasets[-1], weights[-1]):
         #train = train_datasets
@@ -455,4 +453,4 @@ def random_forest_classifier(df, asset):
     final_predictions_df.to_csv('predictions.csv', index=False)
   
 
-
+'''
