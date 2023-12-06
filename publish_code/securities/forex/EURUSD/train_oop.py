@@ -155,7 +155,7 @@ if __name__ == "__main__":
     
     
     
-    bar_creator = CreateBars(stock)
+    bar_creator = CreateBars(stock, asset)
     #x =bar_creator.dollar_bars()
    # print(x)
     
