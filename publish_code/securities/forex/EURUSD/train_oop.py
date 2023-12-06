@@ -97,12 +97,12 @@ class FeatureMaker:
 
 
 class Labeling:
-    def __init__(self, bars_df):
+    def __init__(self, bars_df, asset):
         self.bars_df = bars_df
-        
+        self.asset =asset        
 
     def triple_barriers(self):
-        self.triple_result =barriers.apply_triple_barrier(self.bars_df,[1,1,1], 24)
+        self.triple_result =barriers.apply_triple_barrier(self.bars_df,[1,1,1], 24, self.asset)
         return self.triple_result
     
     def sample_weights(self):
