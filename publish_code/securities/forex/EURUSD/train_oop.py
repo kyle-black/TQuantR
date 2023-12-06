@@ -201,7 +201,7 @@ if __name__ == "__main__":
    # print(feature_bars.columns)
     
     
-    label_instance_ =Labeling(feature_bars)
+    label_instance_ =Labeling(feature_bars, asset)
     label_instance_ = label_instance_.triple_barriers()
     
     print(label_instance_)
