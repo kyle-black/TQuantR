@@ -297,7 +297,7 @@ def random_forest_classifier(df, asset):
     # 
     #     
     
-    dropcols =[df.columns.str.contains(asset)]
+    dropcols =df.columns.str.contains(asset)
     print(dropcols)
     
     
