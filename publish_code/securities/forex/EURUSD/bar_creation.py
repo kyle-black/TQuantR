@@ -51,7 +51,7 @@ def get_volume_bars(ohlc_df, volume_threshold):
     return volume_bars_df
 '''
 
-def get_volume_bars(ohlc_df, lookback_period):
+def get_volume_bars(ohlc_df, lookback_period, asset):
     """
     Create volume bars from OHLC data using adaptive threshold based on rolling mean.
 
@@ -63,8 +63,8 @@ def get_volume_bars(ohlc_df, lookback_period):
     - DataFrame of volume bars.
     """
     # Calculate rolling mean of volume
-    rolling_mean = ohlc_df['Volume'].rolling(window=lookback_period).mean().shift(1)
-    cum_volume = ohlc_df['Volume'].cumsum()
+    rolling_mean = ohlc_df[f'{asset}_Volume'].rolling(window=lookback_period).mean().shift(1)
+    cum_volume = ohlc_df[f'{asset}_Volume'].cumsum()
 
     # The threshold is the running total of rolling means
     threshold = rolling_mean.cumsum()
@@ -94,7 +94,7 @@ def get_dollar_bars(time_bars, dollar_threshold, asset):
     for i in range(len(time_bars)):
 
         # Get the timestamp, open, high, low, close, and volume of the next bar
-        next_close, next_high, next_low, next_open, next_timestamp, next_volume = [time_bars[i][k] for k in ['Close', 'High', 'Low', 'Open', 'Date', 'Volume']]
+        next_close, next_high, next_low, next_open, next_timestamp, next_volume = [time_bars[i][k] for k in [f'{asset}_Close', f'{asset}_High', f'{asset}_Low', f'{asset}_Open', 'Date', f'{asset}_Volume']]
 
         # Assuming next_timestamp is your UNIX timestamp
         #next_timestamp_dt = datetime.fromtimestamp(next_timestamp, "Y-%m-%d")
