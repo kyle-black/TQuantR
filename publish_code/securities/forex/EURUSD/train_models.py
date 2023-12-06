@@ -275,8 +275,13 @@ def support_vector_classifier(df):
     # You might want to return something from this function, like t
   
 
-def random_forest_classifier(df):
+def random_forest_classifier(df, asset):
     
+    
+    if asset is not None:
+        asset =asset
+    
+
     # Data Preprocessing
     start_date = pd.to_datetime('2003-02-02')
     end_date = pd.to_datetime('2016-01-02')
@@ -288,10 +293,23 @@ def random_forest_classifier(df):
     
     # Splitting data
     train_datasets, test_datasets, weights = crossvalidation.run_split_process(df)
-    # train_datasets = bootstrap.sequential_bootstrap_with_rebalance(train_datasets)    
+    # train_datasets = bootstrap.sequential_bootstrap_with_rebalance(train_datasets)
+    # 
+    #     
     
-    feature_cols = ['Daily_Returns', 'Middle_Band', 'Upper_Band', 'Lower_Band', 'Log_Returns', 'MACD', 'Signal_Line_MACD', 'RSI', 'SpreadOC', 'SpreadLH', 'SMI']
-    target_col = "label"
+    dropcols =[df.columns.str.contains(asset)]
+    
+    
+    #feature_cols = ['Daily_Returns', 'Middle_Band', 'Upper_Band', 'Lower_Band', 'Log_Returns', 'MACD', 'Signal_Line_MACD', 'RSI', 'SpreadOC', 'SpreadLH', 'SMI']
+    
+    feature_cols = df.drop(dropcols).columns
+    
+    #fearture_cols = df.drop('EURUSD', axis=1).columns
+
+    target_col = f'{asset}_Close'
+
+    
+    #target_col = ""
     
     all_predictions = []
     all_actuals = []

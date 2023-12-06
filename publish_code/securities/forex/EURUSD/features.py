@@ -5,10 +5,15 @@ from statsmodels.tsa.stattools import adfuller
 from statsmodels.tsa.statespace.tools import diff
 
 
-def add_price_features(df, window_length):
+def add_price_features(df, window_length,asset):
     df =df.copy()
+
+    if asset is not None:
+        close = f'{asset}_Close'
+    else: close = 'Close'
+    
     ### Add autocorrelation / serial correlation
-    autocorr_lag_10 = df['Close'].autocorr(lag=window_length)
+    autocorr_lag_10 = df[close].autocorr(lag=window_length)
 
     ############# Bolinger band Calc
 
@@ -19,30 +24,30 @@ def add_price_features(df, window_length):
     # Middle Band = n-day simple moving average (SMA)
     num_std_dev = 2
 
-    df['Middle_Band'] = df['Close'].rolling(window=window_length).mean()
+    df['Middle_Band'] = df[close].rolling(window=window_length).mean()
 
     # Upper Band = Middle Band + (standard deviation of price x 2)
-    df['Upper_Band'] = df['Middle_Band'] + df['Close'].rolling(window=window_length).std() * num_std_dev
+    df['Upper_Band'] = df['Middle_Band'] + df[close].rolling(window=window_length).std() * num_std_dev
 
     # Lower Band = Middle Band - (standard deviation of price x 2)
-    df['Lower_Band'] = df['Middle_Band'] - df['Close'].rolling(window=window_length).std() * num_std_dev
+    df['Lower_Band'] = df['Middle_Band'] - df[close].rolling(window=window_length).std() * num_std_dev
 
     #Log Returns
-    df['Log_Returns'] = np.log(df['Close']/ df['Close'].shift(window_length))
-    df['SpreadOC'] = df['Open'] / df['Close']
+    df['Log_Returns'] = np.log(df[close]/ df[close].shift(window_length))
+    df['SpreadOC'] = df['Open'] / df[close]
     df['SpreadLH'] = df['Low'] / df['High']
 
 
     #######################MACD 
-    exp1 = df['Close'].ewm(span=12, adjust=False).mean()
-    exp2 = df['Close'].ewm(span=26, adjust=False).mean()
+    exp1 = df[f'{asset}_Close'].ewm(span=12, adjust=False).mean()
+    exp2 = df[f'{asset}_Close'].ewm(span=26, adjust=False).mean()
     df['MACD'] = exp1 - exp2
     df['Signal_Line_MACD'] = df['MACD'].ewm(span=9, adjust=False).mean()
 
 
 
     #########################RSI
-    delta = df['Close'].diff()
+    delta = df[f'{asset}Close'].diff()
     gain = (delta.where(delta > 0, 0)).fillna(0)
     loss = (-delta.where(delta < 0, 0)).fillna(0)
     avg_gain = gain.rolling(window=window_length).mean()
@@ -51,7 +56,7 @@ def add_price_features(df, window_length):
     df['RSI'] = 100 - (100 / (1 + rs))
 
 
-    #df['SMI'] = df['Close'] - ((df['High'] -df['Low']).rolling(window_length=window_length).median()) 
+    #df['SMI'] = df[close] - ((df['High'] -df['Low']).rolling(window_length=window_length).median()) 
 
 
     lookback_period = window_length
@@ -59,7 +64,7 @@ def add_price_features(df, window_length):
 
     # Calculate the raw SMI
     high_low_diff = df['High'] - df['Low']
-    close_minus_lowest_low = df['Close'] - high_low_diff.rolling(window=lookback_period).min()
+    close_minus_lowest_low = df[close] - high_low_diff.rolling(window=lookback_period).min()
     highest_high_minus_lowest_low = high_low_diff.rolling(window=lookback_period).max() - high_low_diff.rolling(window=lookback_period).min()
 
     raw_smi = (close_minus_lowest_low / highest_high_minus_lowest_low) * 100

@@ -187,7 +187,7 @@ def apply_triple_barrier(df, pt_sl, num_days_active):
     return df_merged
 
 '''
-def apply_triple_barrier(df, pt_sl, num_days_active):
+def apply_triple_barrier(df, pt_sl, num_days_active, asset):
     """
     Apply the triple barrier method to label events.
 
@@ -199,16 +199,28 @@ def apply_triple_barrier(df, pt_sl, num_days_active):
     Returns:
     DataFrame with events labeled.
     """
+    if asset is not None:
+        close =f'{asset}_Close'
+        high = f'{asset}_High'
+        low = f'{asset}_Low'
+    else: 
+        close='Close' 
+        high='High'
+        low ='Low' 
+
+
+
+
     df.index = pd.to_datetime(df.Date)
     
     # Compute rolling daily volatility
     rolling_window = 24  # Example window size, you can adjust this
-    daily_volatility = df['Close'].pct_change().rolling(window=rolling_window).std()
+    daily_volatility = df[asset].pct_change().rolling(window=rolling_window).std()
 
     barriers = pd.DataFrame(index=df.index)
 
     for timestamp, data in df.iterrows():
-        price = data['Close']
+        price = data[asset]
         volatility = daily_volatility.loc[timestamp]
 
         upper_barrier = price * (1 + pt_sl[0] * (2*volatility))

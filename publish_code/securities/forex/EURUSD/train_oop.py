@@ -68,14 +68,15 @@ class Analysis:
         return acf_val
 
 class FeatureMaker:
-    def __init__(self, bars_df, window):
+    def __init__(self, bars_df, window, asset):
         # Store the bars dataframe regardless of its type (time, volume, dollar)
         self.bars_df = bars_df
         self.window =window
+        self.asset= asset
 
     def feature_add(self):
 
-        results =features.add_price_features(self.bars_df, self.window)
+        results =features.add_price_features(self.bars_df, self.window, self.asset)
 
         return results
 
@@ -113,15 +114,16 @@ class Labeling:
     
 
 class Model:
-    def __init__(self, bars_df):
+    def __init__(self, bars_df, asset):
         self.bars_df = bars_df
         self.bar_shape = bars_df.shape
+        self.asset = asset
         #self.weights =weights
 
     def train_model(self):
         #output =adaboost_classifier(self.bars_df)
         #output = support_vector_classifier(self.bars_df)
-        output =random_forest_classifier(self.bars_df)
+        output =random_forest_classifier(self.bars_df, self.asset)
         #output = neural_network_classifier(self.bars_df)
         #output =random_forest_anomaly_detector(self.bars_df)
         return output
@@ -144,9 +146,10 @@ class Model:
 
 
 if __name__ == "__main__":
-    stock = pd.read_csv('data/EURUSD60_New1.csv')
+    stock = pd.read_csv('data/combined_df.csv')
     stock.dropna(inplace=True)
 
+    asset ='EURUSD'
     #print(stock.isna().any())
     
     
@@ -178,7 +181,7 @@ if __name__ == "__main__":
 
     #print('ACF Statistic:', analysis_instance_time.acf() )
 
-    feature_instance_ = FeatureMaker(dollar_bars_df, 24)
+    feature_instance_ = FeatureMaker(dollar_bars_df, 24, asset)
     #feature_instance_time = FeatureMaker(time_bars_df, 30)
     feature_bars =feature_instance_.feature_add()
     feature_instance_.elbow_()
@@ -207,7 +210,7 @@ if __name__ == "__main__":
     #print(label_instance_time)
    # print(weights)
 
-    model =Model(label_instance_)
+    model =Model(label_instance_, asset)
     
     print(model.train_model())
 
