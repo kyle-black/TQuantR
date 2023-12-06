@@ -124,7 +124,7 @@ def get_dollar_bars(time_bars, dollar_threshold, asset):
             bar_timestamp_str = bar_timestamp.strftime("%Y-%m-%d %H:%M:%S")
 
             # Add a new dollar bar to the list of dollar bars
-            dollar_bars += [{'Date': bar_timestamp_str, 'Open': next_open, 'High': running_high, 'Low': running_low, 'Close': next_close}]
+            dollar_bars += [{'Date': bar_timestamp_str, f'{asset}_Open': next_open, f'{asset}_High': running_high, f'{asset}_Low': running_low, f'{asset}_Close': next_close}]
 
             # Reset the running volume to zero
             running_volume = 0
@@ -141,7 +141,7 @@ def get_dollar_bars(time_bars, dollar_threshold, asset):
     dollar_bars = pd.DataFrame.from_dict(dollar_bars)
     #####################################################  Add percent change column to dollar bar DF. 
 
-    dollar_bars['Daily_Returns'] = dollar_bars['Close'].pct_change()
+    dollar_bars['Daily_Returns'] = dollar_bars[f'{asset}_Close'].pct_change()
 
 
     return dollar_bars
