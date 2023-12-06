@@ -303,7 +303,7 @@ def random_forest_classifier(df, asset):
     
     #feature_cols = ['Daily_Returns', 'Middle_Band', 'Upper_Band', 'Lower_Band', 'Log_Returns', 'MACD', 'Signal_Line_MACD', 'RSI', 'SpreadOC', 'SpreadLH', 'SMI']
     
-    
+    print('dropcols:',dropcols)
     feature_cols = df.drop(dropcols, axis=1)
     
     #fearture_cols = df.drop('EURUSD', axis=1).columns
