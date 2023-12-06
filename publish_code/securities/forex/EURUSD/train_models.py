@@ -298,18 +298,20 @@ def random_forest_classifier(df, asset):
     #     
     
     dropcols =df.filter(like=asset)
-    print(dropcols.columns)
+    #print(dropcols.columns)
     
     
     #feature_cols = ['Daily_Returns', 'Middle_Band', 'Upper_Band', 'Lower_Band', 'Log_Returns', 'MACD', 'Signal_Line_MACD', 'RSI', 'SpreadOC', 'SpreadLH', 'SMI']
     
     
-    feature_cols = df.drop(dropcols).columns
+    feature_cols = df.drop(dropcols)
     
     #fearture_cols = df.drop('EURUSD', axis=1).columns
 
     target_col = f'{asset}_Close'
 
+
+    print(feature_cols)
     '''
     #target_col = ""
     
