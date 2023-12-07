@@ -204,7 +204,7 @@ if __name__ == "__main__":
     label_instance_ =Labeling(feature_bars, asset)
     label_instance_ = label_instance_.triple_barriers()
     
-    print(label_instance_)
+   # print(label_instance_)
     label_instance_.to_csv('labels.csv')
     
     #df, weights = label_instance_time.sample_weights()
