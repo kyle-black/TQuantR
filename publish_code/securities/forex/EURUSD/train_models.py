@@ -311,8 +311,8 @@ def random_forest_classifier(df, asset):
     target_col = f'{asset}_Close'
 
 
-    print(feature_cols.columns)
-    '''
+   # print(feature_cols.columns)
+    
     #target_col = ""
     
     all_predictions = []
@@ -455,4 +455,4 @@ def random_forest_classifier(df, asset):
     final_predictions_df.to_csv('predictions.csv', index=False)
   
 
-'''
+
