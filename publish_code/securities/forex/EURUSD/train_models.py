@@ -361,6 +361,15 @@ def random_forest_classifier(df, asset):
     X_test = test_data[feature_cols]
     y_test = test_data[target_col]
 
+    # Get the names of the columns with datetime dtype
+    datetime_columns = X_train.select_dtypes(include=[np.datetime64]).columns
+
+# Drop the datetime columns
+    X_train = X_train.drop(datetime_columns, axis=1)
+
+# Now you can fit the scaler
+   # X_train = scaler.fit_transform(X_train)
+
     # Standardize the data
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
@@ -427,6 +436,7 @@ def random_forest_classifier(df, asset):
    # y_test_encoded = encoder.fit_transform(y_test)
 
    # logloss = log_loss(y_test_encoded, probas)
+
 
 
    # print('logloss:', logloss)
