@@ -151,7 +151,7 @@ def support_vector_classifier(df):
     final_predictions_df = pd.concat(all_predictions)
     final_predictions_df.to_csv('predictions.csv', index=False)
 '''
-
+'''
 def support_vector_classifier(df):
     
     # Data Preprocessing
@@ -250,17 +250,17 @@ def support_vector_classifier(df):
 
 
     # After processing all splits, compute overall metrics
-    '''
+    
     joblib.dump(clf, 'models/EURUSD/random_forest_model_up_SPY.pkl')
     joblib.dump(pca, 'models/EURUSD/pca_transformation_up_SPY.pkl')
     joblib.dump(scaler, 'models/EURUSD/scaler_SPY.pkl')
-    '''
+    
     file_input = "/mnt/volume_nyc1_02"
-    '''
+    
     joblib.dump(clf, f'{file_input}/models/EURUSD/random_forest_classifier_up_EURUSD.pkl')
     joblib.dump(pca, f'{file_input}/models/EURUSD/pca_transformation_up_EURUSD.pkl')
     joblib.dump(scaler, f'{file_input}/models/EURUSD/scaler_EURUSD.pkl')
-    '''
+    
     print(predictions_df)
     print("\nOverall Classification Report:")
     #print(classification_report(all_actuals, all_preds, zero_division=1))
@@ -270,7 +270,7 @@ def support_vector_classifier(df):
     # Combining all predictions and saving
     final_predictions_df = pd.concat(all_predictions)
     final_predictions_df.to_csv('predictions.csv', index=False)
-  
+'''
     
     # You might want to return something from this function, like t
   
@@ -292,33 +292,42 @@ def random_forest_classifier(df, asset):
     df = df[60:]
     
     # Splitting data
+
+    print('input dataframe:',df.columns)
     train_datasets, test_datasets, weights = crossvalidation.run_split_process(df)
     # train_datasets = bootstrap.sequential_bootstrap_with_rebalance(train_datasets)
     # 
     #     
     
-    dropcols =df.filter(like=asset)
+   # dropcols =df.filter(like=asset)
     #print(dropcols.columns)
     
     
     #feature_cols = ['Daily_Returns', 'Middle_Band', 'Upper_Band', 'Lower_Band', 'Log_Returns', 'MACD', 'Signal_Line_MACD', 'RSI', 'SpreadOC', 'SpreadLH', 'SMI']
+    df =df.drop(['weekday', 'hour', 'upper_barrier', 'lower_barrier', 't1'], axis =1)
+   # print('dropcols:',dropcols)
+    df = df.drop('Date',axis=1)
+    #feature_cols = df.drop(dropcols, axis=1)
     
-    print('dropcols:',dropcols)
-    feature_cols = df.drop(dropcols, axis=1)
-    
+    feature_cols = df.drop('label',axis=1).columns
     #fearture_cols = df.drop('EURUSD', axis=1).columns
 
-    target_col = f'{asset}_Close'
+    #target_col = f'{asset}_Close'
+
+    target_col = 'label'
 
 
    # print(feature_cols.columns)
     
     #target_col = ""
     
+    print('featurecols:',feature_cols)
+    
+
     all_predictions = []
     all_actuals = []
     all_preds = []
-    n_components = 6
+    n_components = 4
     scaler = StandardScaler()
     
     # Define a parameter grid for GridSearchCV
@@ -327,12 +336,12 @@ def random_forest_classifier(df, asset):
     '''
     
     param_grid = {
-        'n_estimators': [200, 500, 1000],
-        'max_features': ['log2', 'sqrt'],
+        'n_estimators': [200,500,1000],
+        'max_features': [4],
         'max_depth': [10, 20, None],
         'min_samples_split': [2, 5],
         'min_samples_leaf': [1, 2],
-        'bootstrap': [True, False]
+       # 'bootstrap': [True, False]
     }
 
     # Training and Predicting for each split
@@ -363,22 +372,23 @@ def random_forest_classifier(df, asset):
 
     # Initialize GridSearchCV
     #clf = SVC(probability=True, C=50)
-    clf =RandomForestClassifier( random_state=42, criterion='log_loss', n_estimators=1000)
+    clf =RandomForestClassifier( random_state=42, n_estimators=200)
 
-    #grid_search = GridSearchCV(estimator=clf, param_grid=param_grid, cv=3, n_jobs=-1, verbose=2)
-    #grid_search.fit(X_train, y_train, sample_weight=weight_data)
+    grid_search = GridSearchCV(estimator=clf, param_grid=param_grid, cv=3, n_jobs=-1, verbose=2)
+    grid_search.fit(X_train, y_train, sample_weight=weight_data)
 
     #best_params = grid_search.best_params_
     # print(f"Best parameters found: {best_params}")
 
     #best_rf = grid_search.best_estimator_
     #grid_search = GridSearchCV(clf, param_grid,refit=True, verbose=3, n_jobs=-1)
-    clf.fit(X_train, y_train, sample_weight=weight_data)
+    #clf.fit(X_train, y_train, sample_weight=weight_data)
 
     # Use the best estimator to predict
     #best_svm = grid_search.best_estimator_
     #print('best svm:',best_svm)
-    probas = clf.predict_proba(X_test)
+    
+    probas = grid_search.predict_proba(X_test)
 
     encoder = OneHotEncoder(sparse=False)
 
@@ -390,7 +400,7 @@ def random_forest_classifier(df, asset):
    # selected_columns= probas[:,[0,2]]
     max_proba_indices = np.argmax(probas, axis=1)
    # max_proba_indices= np.where(max_proba_indices==1,2,max_proba_indices)
-    predicted_classes = clf.classes_[max_proba_indices]
+    predicted_classes = grid_search.classes_[max_proba_indices]
     y_pred = predicted_classes
 
     
@@ -411,31 +421,44 @@ def random_forest_classifier(df, asset):
     print(comparison_df)
 
     # Assume y_test is your test data
-    y_test = y_test.reshape(-1, 1)
+#    y_test = y_test.reshape(-1, 1)
 
     # Fit and transform the data
-    y_test_encoded = encoder.fit_transform(y_test)
+   # y_test_encoded = encoder.fit_transform(y_test)
 
-    logloss = log_loss(y_test_encoded, probas)
+   # logloss = log_loss(y_test_encoded, probas)
 
 
-    print('logloss:', logloss)
+   # print('logloss:', logloss)
 
     # brier_score = brier_score_loss(y_test, predicted_probabilities)
     # print('Brier Score:', brier_score)
 
+    print(len(y_test))
+    print(len(y_pred))
+    print(len(probas[0]))
+    print(len(probas[1]))
+    print(len(probas[2]))
+    print(probas.shape)
+
+
     predictions_df = pd.DataFrame({
         'Actual': y_test,
-        'Predictions': y_pred
+        'Predictions': y_pred,
+        'down proba': probas[:,0],
+        'neutral proba': probas[:,1],
+        'up proba': probas[:,2] 
     })
     all_predictions.append(predictions_df)
 
     all_actuals.extend(y_test.tolist())
     all_preds.extend(y_pred.tolist())
     print('###########################')
-    print('classes---> ',clf.classes_)
 
+    predictions_df.to_csv('predictions_df.csv')
+    #print('classes---> ',clf.classes_)
 
+'''
     # After processing all splits, compute overall metrics
     
     joblib.dump(clf, 'random_forest_model_up_EURUSD_60.pkl')
@@ -445,6 +468,8 @@ def random_forest_classifier(df, asset):
     file_input = "/mnt/volume_nyc1_02"
    
     print(predictions_df)
+
+    predictions_df.to_csv('predictions_final.csv', index=False)
     print("\nOverall Classification Report:")
     #print(classification_report(all_actuals, all_preds, zero_division=1))
     print('Overall Confusion Matrix:', confusion_matrix(all_actuals, all_preds))
@@ -454,5 +479,5 @@ def random_forest_classifier(df, asset):
     final_predictions_df = pd.concat(all_predictions)
     final_predictions_df.to_csv('predictions.csv', index=False)
   
-
+'''
 

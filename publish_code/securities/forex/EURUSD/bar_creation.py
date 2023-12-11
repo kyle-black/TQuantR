@@ -116,17 +116,34 @@ def get_dollar_bars(time_bars, dollar_threshold, asset):
         # Update the running high and low
         running_high, running_low = max(running_high, next_high), min(running_low, next_low)
 
+        #for bar in time_bars:
+         #       if bar['Date'] == next_timestamp:
+                
+          #          other_prices= bar
+           #     else: other_prices =next_timestamp
+
         # If the next bar's dollar volume would take us over the threshold...
         if dollar_volume + running_volume >= dollar_threshold:
 
             # Set the timestamp for the dollar bar
             bar_timestamp = next_timestamp_dt + timedelta(minutes=1)
+
+            
+
+            #other_prices =time_bars[bar_timestamp]
             
             # Convert the datetime object to the desired format
             bar_timestamp_str = bar_timestamp.strftime("%Y-%m-%d %H:%M:%S")
+            #bar_timestamp_str = bar_timestamp
 
+            parse_dict =parse_dollarbars(time_bars[i], asset)
+
+
+            dollar_dict = {'Date': bar_timestamp_str, f'{asset}_Open': next_open, f'{asset}_High': running_high, f'{asset}_Low': running_low, f'{asset}_Close': next_close}
+
+            dollar_dict.update(parse_dict)
             # Add a new dollar bar to the list of dollar bars
-            dollar_bars += [{'Date': bar_timestamp_str, f'{asset}_Open': next_open, f'{asset}_High': running_high, f'{asset}_Low': running_low, f'{asset}_Close': next_close}]
+            dollar_bars += [dollar_dict]
 
             # Reset the running volume to zero
             running_volume = 0
@@ -147,6 +164,14 @@ def get_dollar_bars(time_bars, dollar_threshold, asset):
 
 
     return dollar_bars
+
+
+def parse_dollarbars(bar, asset):
+    
+
+    filtered_dict = {key: value for key, value in bar.items() if asset not in key}
+    return filtered_dict
+        
 
 
 def get_dollar_bars_P(time_bars, dollar_threshold):

@@ -11,7 +11,7 @@ from scipy.stats import norm
 from statsmodels.tsa.stattools import adfuller
 import barriers
 import features
-from train_models import random_forest_classifier, support_vector_classifier #, adaboost_classifier, random_forest_ts #, random_forest_anomaly_detector
+from train_models import random_forest_classifier #, support_vector_classifier #, adaboost_classifier, random_forest_ts #, random_forest_anomaly_detector
 from weights import return_attribution
 
 from autocorrelation import compute_and_plot_acf
@@ -41,7 +41,7 @@ class CreateBars:
         # Check if time_bar_df has been created, if not, create it
         if self.time_bar_df is None:
             self.time_bars()
-        return bc.get_dollar_bars(self.time_bar_df, 16000, self.asset)
+        return bc.get_dollar_bars(self.time_bar_df, 10000, self.asset)
     
     
 class Analysis:
@@ -166,6 +166,8 @@ if __name__ == "__main__":
    # vol_bars_df = bar_creator.vol_bars()
     dollar_bars_df = bar_creator.dollar_bars()
 
+    print(dollar_bars_df)
+
    # print(dollar_bars_df)
     #dollar_bars_df.to_csv('dol_bars.csv')
 
@@ -181,7 +183,9 @@ if __name__ == "__main__":
     #print('ADF Statistic:', analysis_instance_time.AD_fuller() )
 
     #print('ACF Statistic:', analysis_instance_time.acf() )
-
+    dollar_bars_df.to_csv('dollar_bars.csv')
+    
+    
     feature_instance_ = FeatureMaker(dollar_bars_df, 24, asset)
     #feature_instance_time = FeatureMaker(time_bars_df, 30)
     feature_bars =feature_instance_.feature_add()
@@ -199,7 +203,7 @@ if __name__ == "__main__":
     
     
    # print(feature_bars.columns)
-    
+    feature_bars.to_csv('featurebars.csv')
     
     label_instance_ =Labeling(feature_bars, asset)
     label_instance_ = label_instance_.triple_barriers()
