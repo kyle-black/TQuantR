@@ -458,13 +458,16 @@ def random_forest_classifier(df, asset):
     predictions_df.to_csv('predictions_df.csv')
     #print('classes---> ',clf.classes_)
 
-'''
+
     # After processing all splits, compute overall metrics
     
-    joblib.dump(clf, 'random_forest_model_up_EURUSD_60.pkl')
-    joblib.dump(pca, 'pca_transformation_up_EURUSD_60.pkl')
-    joblib.dump(scaler, 'scaler_EURUSD.pkl')
-    
+    joblib.dump(clf, 'models/random_forest_model_up_EURUSD_60.pkl')
+    joblib.dump(pca, 'models/pca_transformation_up_EURUSD_60.pkl')
+    joblib.dump(scaler, 'models/scaler_EURUSD.pkl')
+
+
+
+'''    
     file_input = "/mnt/volume_nyc1_02"
    
     print(predictions_df)
