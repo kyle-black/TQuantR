@@ -200,9 +200,9 @@ def apply_triple_barrier(df, pt_sl, num_days_active, asset):
     DataFrame with events labeled.
     """
     if asset is not None:
-        close =f'{asset}_Close'
-        high = f'{asset}_High'
-        low = f'{asset}_Low'
+        close ='Close'
+        high = 'High'
+        low = 'Low'
     else: 
         close='Close' 
         high='High'
@@ -221,7 +221,7 @@ def apply_triple_barrier(df, pt_sl, num_days_active, asset):
 
     print('dataframeindex:', df.index)
     # Compute rolling daily volatility
-    rolling_window = 48  # Example window size, you can adjust this
+    rolling_window = 48 # Example window size, you can adjust this
     daily_volatility = df[close].pct_change().rolling(window=rolling_window).std()
 
     barriers = pd.DataFrame(index=df.index)
@@ -230,8 +230,8 @@ def apply_triple_barrier(df, pt_sl, num_days_active, asset):
         price = data[close]
         volatility = daily_volatility.loc[timestamp]
 
-        upper_barrier = price * (1 + pt_sl[0] * (2*volatility))
-        lower_barrier = price * (1 - pt_sl[1] * (2*volatility))
+        upper_barrier = price * (1 + pt_sl[0] * (1*volatility))
+        lower_barrier = price * (1 - pt_sl[1] * (1*volatility))
 
         barriers.at[timestamp, 'upper_barrier'] = upper_barrier
         barriers.at[timestamp, 'lower_barrier'] = lower_barrier
@@ -243,8 +243,8 @@ def apply_triple_barrier(df, pt_sl, num_days_active, asset):
 
         df_temp = df.loc[timestamp:].iloc[1:]
 
-        touch_upper = df_temp[df_temp[high] >= upper_barrier].index.min()
-        touch_lower = df_temp[df_temp[low] <= lower_barrier].index.min()
+        touch_upper = df_temp[df_temp[close] >= upper_barrier].index.min()
+        touch_lower = df_temp[df_temp[close] <= lower_barrier].index.min()
 
         barriers.at[timestamp, 'touch_upper'] = touch_upper
         barriers.at[timestamp, 'touch_lower'] = touch_lower
@@ -275,7 +275,7 @@ def apply_triple_barrier_P(df, pt_sl, num_days_active):
     df.index = pd.to_datetime(df.Date)
     
     # Compute rolling daily volatility
-    rolling_window = 24  # Example window size, you can adjust this
+    rolling_window = 48  # Example window size, you can adjust this
     daily_volatility = df['Close'].pct_change().rolling(window=rolling_window).std()
 
     barriers = pd.DataFrame(index=df.index)
@@ -284,8 +284,8 @@ def apply_triple_barrier_P(df, pt_sl, num_days_active):
         price = data['Close']
         volatility = daily_volatility.loc[timestamp]
 
-        upper_barrier = price * (1 + pt_sl[0] * (2*volatility))
-        lower_barrier = price * (1 - pt_sl[1] * (2*volatility))
+        upper_barrier = price * (1 + pt_sl[0] * (1*volatility))
+        lower_barrier = price * (1 - pt_sl[1] * (1*volatility))
 
         barriers.at[timestamp, 'upper_barrier'] = upper_barrier
         barriers.at[timestamp, 'lower_barrier'] = lower_barrier

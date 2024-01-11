@@ -11,7 +11,7 @@ from scipy.stats import norm
 from statsmodels.tsa.stattools import adfuller
 import barriers
 import features
-from train_models import random_forest_classifier #, support_vector_classifier #, adaboost_classifier, random_forest_ts #, random_forest_anomaly_detector
+from train_models import random_forest_classifier, neural_network_c, neural_network_cnn #, support_vector_classifier #, adaboost_classifier, random_forest_ts #, random_forest_anomaly_detector
 from weights import return_attribution
 
 from autocorrelation import compute_and_plot_acf
@@ -41,7 +41,7 @@ class CreateBars:
         # Check if time_bar_df has been created, if not, create it
         if self.time_bar_df is None:
             self.time_bars()
-        return bc.get_dollar_bars(self.time_bar_df, 10000, self.asset)
+        return bc.get_dollar_bars(self.time_bar_df, 7000, self.asset)
     
     
 class Analysis:
@@ -77,7 +77,7 @@ class FeatureMaker:
 
     def feature_add(self):
 
-        results =features.add_price_features(self.bars_df, self.window, self.asset)
+        results =features.add_price_features(self.bars_df, self.window)
 
         return results
 
@@ -102,7 +102,7 @@ class Labeling:
         self.asset =asset        
 
     def triple_barriers(self):
-        self.triple_result =barriers.apply_triple_barrier(self.bars_df,[1,1,1], 24, self.asset)
+        self.triple_result =barriers.apply_triple_barrier(self.bars_df,[1,1,1], 48, self.asset)
         return self.triple_result
     
     def sample_weights(self):
@@ -124,6 +124,7 @@ class Model:
     def train_model(self):
         #output =adaboost_classifier(self.bars_df)
         #output = support_vector_classifier(self.bars_df)
+       # output =neural_network_cnn(self.bars_df, self.asset)
         output =random_forest_classifier(self.bars_df, self.asset)
         #output = neural_network_classifier(self.bars_df)
         #output =random_forest_anomaly_detector(self.bars_df)
@@ -147,7 +148,7 @@ class Model:
 
 
 if __name__ == "__main__":
-    stock = pd.read_csv('data/combined_df.csv')
+    stock = pd.read_csv('data/EURUSD60_New1.csv')
     stock.dropna(inplace=True)
 
     asset ='EURUSD'
@@ -186,7 +187,7 @@ if __name__ == "__main__":
     dollar_bars_df.to_csv('dollar_bars.csv')
     
     
-    feature_instance_ = FeatureMaker(dollar_bars_df, 24, asset)
+    feature_instance_ = FeatureMaker(dollar_bars_df, 48, asset)
     #feature_instance_time = FeatureMaker(time_bars_df, 30)
     feature_bars =feature_instance_.feature_add()
     feature_instance_.elbow_()

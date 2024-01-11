@@ -5,19 +5,19 @@ from statsmodels.tsa.stattools import adfuller
 from statsmodels.tsa.statespace.tools import diff
 
 
-def add_price_features(df, window_length,asset):
+def add_price_features(df, window_length):
     df =df.copy()
 
-    if asset is not None:
-        open = f'{asset}_Open'
-        close =f'{asset}_Close'
-        high = f'{asset}_High'
-        low = f'{asset}_Low'
-    else: 
-        open= 'Open'
-        close='Close' 
-        high='High'
-        low ='Low' 
+   # if asset is not None:
+    open = 'Open'
+    close ='Close'
+    high = 'High'
+    low = 'Low'
+    #else: 
+    #    open= 'Open'
+    #    close='Close' 
+    #    high='High'
+    #    low ='Low' 
     
     ### Add autocorrelation / serial correlation
     autocorr_lag_10 = df[close].autocorr(lag=window_length)

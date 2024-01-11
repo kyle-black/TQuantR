@@ -2,10 +2,11 @@ import pandas as pd
 import numpy as np
 import bar_creation as bc
 import numpy as np
+from redis_connect import url_connection
 
 
 
-from scipy.stats import norm
+#from scipy.stats import norm
 
 import barriers
 import features
@@ -25,12 +26,13 @@ import schedule
 import financial_bars   
 
 class CreateBars:
-    def __init__(self, raw_bars):
+    def __init__(self, raw_bars, asset):
         self.raw_bars = raw_bars
         self.time_bar_df = None  # Initialize this attribute
         self.time_bar_dict = None
+        self.asset =asset
     def time_bars(self):
-        self.time_bar_df = bc.time_bars(self.raw_bars)  # Set the attribute
+        self.time_bar_df = bc.time_bars(self.raw_bars, self.asset)  # Set the attribute
         self.time_bar_dict = self.time_bar_df.to_dict('records')
         return self.time_bar_df
 
@@ -45,7 +47,7 @@ class CreateBars:
         # Check if time_bar_df has been created, if not, create it
         if self.time_bar_df is None:
             self.time_bars()
-        return bc.get_dollar_bars_P(self.time_bar_df, 16000)
+        return bc.get_dollar_bars_P(self.time_bar_df, 16000, self.asset)
     
 
 
@@ -125,7 +127,7 @@ class Model:
 
 
 def run_predictions():
-    symbol = 'EURUSD_60'
+    symbol = 'EURUSD'
     #stock = get_data.get_json(symbol)
 
     stock = live_data.latest_data_60()
@@ -134,7 +136,7 @@ def run_predictions():
     #stock['Date'] = stock['Date'].dt.strftime('%Y-%m-%d')
     #print(type(stock['Date'][0]))
     stock = stock.iloc[::]
-    bar_creator = CreateBars(stock)
+    bar_creator = CreateBars(stock, symbol)
     
     
     
@@ -155,6 +157,8 @@ def run_predictions():
        'Daily_Returns', 'Middle_Band', 'Upper_Band', 'Lower_Band',
        'Log_Returns', 'SpreadOC', 'SpreadLH', 'MACD', 'Signal_Line_MACD',
        'RSI','SMI']]
+    
+    #feature_bars = feature_bars.drop('Date',axis=1)
     
     label_instance_time =Labeling(feature_bars)
     label_instance_time = label_instance_time.triple_barriers()
@@ -202,10 +206,10 @@ def run_predictions():
 
     
 
-    '''
     
     
-    res1 = redis_connection.hset(
+    
+    res1 = url_connection.hset(
     date,
     mapping={
         'close': last_close,
@@ -221,10 +225,10 @@ def run_predictions():
     
 
 
-    res4 = redis_connection.hgetall(date)
+    res4 = url_connection.hgetall(date)
     print('redis:',res4)
 
-    '''
+    
 schedule.every(1).minutes.do(run_predictions)
 
 while True:
