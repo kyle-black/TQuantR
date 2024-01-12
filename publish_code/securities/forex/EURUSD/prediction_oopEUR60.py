@@ -212,6 +212,8 @@ def run_predictions():
     res1 = url_connection.hset(
     date,
     mapping={
+        'security': 'EURUSD',
+        'timeframe': '60m',
         'close': last_close,
         'up_prob': up_prob,
         'dwn_prob': dwn_prob,
