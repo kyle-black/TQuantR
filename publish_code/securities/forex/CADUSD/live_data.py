@@ -45,7 +45,7 @@ def latest_data_60():
     #df_list =[]
     #for security in securities_list:
     
-    security = 'EURUSD'
+    security = 'CADUSD'
 
     nifty_index_data = tv.get_hist(symbol=f'{security}',exchange='OANDA',interval=Interval.in_1_hour,n_bars=10000)
 

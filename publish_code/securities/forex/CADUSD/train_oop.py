@@ -148,10 +148,10 @@ class Model:
 
 
 if __name__ == "__main__":
-    stock = pd.read_csv('data/EURUSD60_New1.csv')
+    stock = pd.read_csv('data/new_fx_data/CADUSD60_New1.csv')
     stock.dropna(inplace=True)
 
-    asset ='EURUSD'
+    asset ='USDCAD'
     #print(stock.isna().any())
     
     
